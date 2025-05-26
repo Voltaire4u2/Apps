@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Reading App (Mandarin Support)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-color: #f4f4f4;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        #word-display {
+            font-size: 48px;
+            margin: 20px;
+            transition: transform 0.2s;
+        }
+
+        .progress-container {
+            width: 80%;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        #progress-meter {
+            width: 100%;
+        }
+
+        .control-panel {
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #font-size-slider, #speed-step-slider {
+            width: 200px;
+        }
+
+        .checkbox-label {
+            font-size: 16px;
+            margin-left: 5px;
+        }
+
+        .dark-mode {
+            background-color: #222;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <textarea id="input-text" placeholder="粘贴你的文本 (Paste your text here)" rows="6" cols="50"></textarea>
+
+    <div>
+        <input type="checkbox" id="mandarin-mode">
+        <label for="mandarin-mode" class="checkbox-label">Mandarin Mode (Character-by-Character)</label>
+    </div>
+    
+    <div>
+        <input type="checkbox" id="dark-mode-toggle">
+        <label for="dark-mode-toggle" class="checkbox-label">Dark Mode</label>
+    </div>
+
+    <div id="word-display"></div>
+    
+    <div class="progress-container">
+        <progress id="progress-meter" value="0" max="100"></progress>
+        <span id="wpm-display">WPM: 0</span>
+    </div>
+
+    <div class="control-panel">
+        <button id="start-button" class="button">Start</button>
+        <button id="pause-button" class="button">Pause/Resume</button>
+        <button id="increase-speed" class="button">Increase Speed</button>
+        <button id="decrease-speed" class="button">Decrease Speed</button>
+        <input type="range" id="speed-step-slider" min="10" max="200" value="50">
+        <label for="speed-step-slider">Speed Step</label>
+        <input type="range" id="font-size-slider" min="24" max="100" value="48">
+        <label for="font-size-slider">Font Size</label>
+    </div>
+
+    <script>
+        let words = [];
+        let currentWordIndex = 0;
+        let interval;
+        let speed = 500;
+        let isPaused = false;
+        const minSpeed = 50;
+        const maxSpeed = 2000;
+        let speedStep = 50;
+
+        const inputText = document.getElementById('input-text');
+        const wordDisplay = document.getElementById('word-display');
+        const progressMeter = document.getElementById('progress-meter');
+        const wpmDisplay = document.getElementById('wpm-display');
+        const startButton = document.getElementById('start-button');
+        const pauseButton = document.getElementById('pause-button');
+        const increaseSpeedButton = document.getElementById('increase-speed');
+        const decreaseSpeedButton = document.getElementById('decrease-speed');
+        const speedStepSlider = document.getElementById('speed-step-slider');
+        const mandarinCheckbox = document.getElementById('mandarin-mode');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const fontSizeSlider = document.getElementById('font-size-slider');
+
+        startButton.addEventListener('click', startDisplay);
+        pauseButton.addEventListener('click', togglePause);
+        increaseSpeedButton.addEventListener('click', increaseSpeed);
+        decreaseSpeedButton.addEventListener('click', decreaseSpeed);
+        fontSizeSlider.addEventListener('input', changeFontSize);
+        speedStepSlider.addEventListener('input', changeSpeedStep);
+        darkModeToggle.addEventListener('change', toggleDarkMode);
+
+        function startDisplay() {
+            let text = inputText.value.trim();
+
+            if (mandarinCheckbox.checked) {
+                words = text.split("");
+            } else {
+                words = text.includes(" ") ? text.split(/\s+/) : text.split(/(?<=[。，！？；：])/);
+            }
+
+            currentWordIndex = 0;
+            updateProgress();
+            updateWPM();
+            wordDisplay.textContent = '';
+            isPaused = false;
+            clearInterval(interval);
+            interval = setInterval(displayWord, speed);
+        }
+
+        function displayWord() {
+            if (!isPaused && currentWordIndex < words.length) {
+                wordDisplay.textContent = words[currentWordIndex];
+                currentWordIndex++;
+                updateProgress();
+            } else if (currentWordIndex >= words.length) {
+                clearInterval(interval);
+            }
+        }
+
+        function updateProgress() {
+            progressMeter.value = (currentWordIndex / words.length) * 100;
+        }
+
+        function updateWPM() {
+            let wpm = Math.round(60000 / speed);
+            wpmDisplay.textContent = `WPM: ${wpm}`;
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+        }
+
+        function increaseSpeed() {
+            speed = Math.max(minSpeed, speed - speedStep);
+            updateWPM();
+            restartInterval();
+        }
+
+        function decreaseSpeed() {
+            speed = Math.min(maxSpeed, speed + speedStep);
+            updateWPM();
+            restartInterval();
+        }
+
+        function restartInterval() {
+            if (interval) clearInterval(interval);
+            interval = setInterval(displayWord, speed);
+        }
+
+        function changeFontSize() {
+            wordDisplay.style.fontSize = fontSizeSlider.value + 'px';
+        }
+
+        function changeSpeedStep() {
+            speedStep = parseInt(speedStepSlider.value);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+
+</body>
+</html>
