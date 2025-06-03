@@ -1,4 +1,141 @@
-You are ChatGPT and you are now going to create a short reading comprehension quiz in Russian (Level: B1 – Intermediate) based on the article previously provided in this conversation.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lesson Builder - English Version</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    .selectors, .step {
+      margin-bottom: 20px; background: #fff; border: 1px solid #ccc;
+      padding: 15px; border-radius: 10px;
+    }
+    label { font-weight: bold; display: block; margin-top: 10px; }
+    select, input[type="text"] {
+      width: 100%; padding: 8px; margin-top: 5px;
+      margin-bottom: 10px; font-size: 16px;
+    }
+    textarea {
+      width: 100%; height: 120px; font-family: monospace;
+      padding: 10px; box-sizing: border-box; margin-bottom: 10px;
+    }
+    button, a {
+      display: inline-block; margin-right: 10px; margin-bottom: 5px;
+      padding: 8px 12px; font-size: 14px; text-decoration: none;
+      border: none; border-radius: 5px; cursor: pointer;
+    }
+    .copy-button { background-color: #007bff; color: white; }
+    .chatgpt-link { background-color: #28a745; color: white; }
+    .perplexity-link { background-color: #6f42c1; color: white; }
+    .speedreader-link { background-color: #ffc107; color: black; }
+    .anki-link { background-color: #00bcd4; color: white; }
+  </style>
+</head>
+<body>
+
+  <div class="selectors">
+    <label for="language">Select Language:</label>
+    <select id="language">
+      <option value="french">French</option>
+      <option value="spanish">Spanish</option>
+      <option value="russian">Russian</option>
+      <option value="ukrainian">Ukrainian</option>
+      <option value="italian">Italian</option>
+      <option value="german">German</option>
+      <option value="mandarin">Mandarin (HSK Levels)</option>
+    </select>
+
+    <label for="level">Select Proficiency Level:</label>
+    <select id="level">
+      <option value="A0">A0 – Absolute Beginner</option>
+      <option value="A1">A1 – Beginner</option>
+      <option value="A2">A2 – High Beginner</option>
+      <option value="B1">B1 – Intermediate</option>
+      <option value="B2">B2 – Upper Intermediate</option>
+      <option value="C1">C1 – Advanced</option>
+      <option value="C2">C2 – Fluent</option>
+      <option value="HSK1">HSK 1</option>
+      <option value="HSK2">HSK 2</option>
+      <option value="HSK3">HSK 3</option>
+      <option value="HSK4">HSK 4</option>
+      <option value="HSK5">HSK 5</option>
+      <option value="HSK6">HSK 6</option>
+    </select>
+
+    <label for="topic">Enter Topic:</label>
+    <input type="text" id="topic" placeholder="e.g., climate change">
+  </div>
+
+  <div class="step">
+    <h2>Step 1: Research a Topic (Perplexity)</h2>
+    <textarea id="prompt1">Find highly-ranked or widely cited recent online articles published within the past 30 days about <insert topic>.
+Summarize the key points in bullet format, covering:
+- Major breakthroughs
+- Expert opinions
+- Statistical findings
+Include the publication date and source for each article.
+
+Fallback Strategy:
+If no relevant articles are found, search for authoritative alternative sources such as expert-hosted podcasts, research-backed blogs, or active discussion forums (e.g., Reddit, Quora). Summarize key insights and provide source links.</textarea>
+    <button class="copy-button" onclick="copyText('prompt1')">Copy Prompt</button>
+    <a class="perplexity-link" href="https://www.perplexity.ai" target="_blank" onclick="copyText('prompt1')">Open Perplexity</a>
+    <textarea id="response1" placeholder="Paste Perplexity result here..."></textarea>
+  </div>
+
+  <div class="step">
+    <h2>Step 2: Summarize Article (Perplexity)</h2>
+    <textarea id="prompt2">[Summary prompt will appear here based on selected proficiency level]</textarea>
+    <button class="copy-button" onclick="copyText('prompt2')">Copy Prompt</button>
+    <a class="perplexity-link" href="https://www.perplexity.ai" target="_blank" onclick="copyText('prompt2')">Open Perplexity</a>
+    <a class="speedreader-link" href="https://voltaire4u2.github.io/Apps/reader4.html" target="_blank">Open Speed Reader</a>
+    <textarea id="response2" placeholder="Paste summary here..."></textarea>
+  </div>
+
+  <div class="step">
+    <h2>Step 3: Translate to Target Language (Perplexity)</h2>
+    <textarea id="prompt3">Please translate this summary into <selected language> at the level of <selected level>.</textarea>
+    <button class="copy-button" onclick="copyText('prompt3')">Copy Prompt</button>
+    <a class="perplexity-link" href="https://www.perplexity.ai" target="_blank" onclick="copyText('prompt3')">Open Perplexity</a>
+    <textarea id="response3" placeholder="Paste translation here..."></textarea>
+  </div>
+
+  <div class="step">
+    <h2>Step 4: Extract Vocabulary (ChatGPT)</h2>
+    <textarea id="prompt4">[Vocabulary prompt will update based on translation in Step 3]</textarea>
+    <button class="copy-button" onclick="copyText('prompt4')">Copy Prompt</button>
+    <a class="chatgpt-link" href="https://chatgpt.com" target="_blank" onclick="copyText('prompt4')">Open ChatGPT</a>
+    <button class="copy-button" onclick="downloadVocabCsv()">Download CSV</button>
+    <a class="anki-link" href="file:///C:/Users/russe/OneDrive/Documents/Learning%20AI/AI%20Projects/Anki%20cards/Anki.html" target="_blank">Open Anki App</a>
+    <textarea id="response4" placeholder="Paste vocabulary list here..."></textarea>
+  </div>
+
+  <div class="step">
+    <h2>Step 5: Create Vocabulary Quiz (ChatGPT)</h2>
+    <textarea id="prompt5">
+You are ChatGPT and you will now run an interactive vocabulary quiz with me based on the <selected language> (Level: <selected level>) vocabulary list we already discussed earlier in this conversation. This quiz should take place entirely within the chat interface and leverage your ability to provide adaptive feedback, track my performance, and create a low-friction learning loop without needing a separate app.
+
+Instructions for the quiz:
+  1. Begin with a short introduction that explains the goal: to reinforce vocabulary recall in both directions.
+  2. Phase 1: Ask me to translate each <selected language> word into English. Present one word at a time.
+     - Wait for my response before continuing.
+     - Accept as correct a response even if it does not include the normal accent markers.
+     - If correct, confirm and move to the next word.
+     - If incorrect, gently tell me, then place that word back in the rotation and return to it later.
+  3. Phase 2: Ask me to translate each English word into <selected language>, using the same logic and rules.
+     - Do not require <selected language> accent marks for the answers to count as correct.
+  4. Track my progress throughout and let me know how many words remain or how many mastered.
+  5. The quiz should finish when I have correctly answered all words in both directions at least once.
+  6. At the end, show a summary of my performance and optionally highlight any words I struggled with.
+  
+  Keep everything within the context of this chat. Only show one word at a time and wait for my input before proceeding.
+    </textarea>
+    <button class="copy-button" onclick="copyText('prompt5')">Copy Prompt</button>
+    <a class="chatgpt-link" href="https://chatgpt.com" target="_blank" onclick="copyText('prompt5')">Open ChatGPT</a>
+  </div>
+
+  <div class="step">
+    <h2>Step 6: Create Reading Comprehension Quiz (ChatGPT)</h2>
+    <textarea id="prompt6">
+You are ChatGPT and you are now going to create a short reading comprehension quiz in <selected language> (Level: <selected level>) based on the article previously provided in this conversation.
 
 Instructions for the quiz:
   The quiz should contain a maximum of 5 multiple-choice questions based on the article.
@@ -22,4 +159,167 @@ Instructions for the quiz:
   
   Keep everything within this chat interface. Do not present all questions at once—wait for the user’s input after each.
 
-After the quiz has finished, use the entered topic (“Army Futures Command”) as both the title and the PDF filename. Create a clean, printable PDF titled "Army Futures Command", combining my translated article, vocabulary list, and reading quiz. Structure it with headings, format in Markdown or HTML, and export the content as "Army Futures Command.pdf".
+After the quiz has finished, use the entered topic (“<insert topic>”) as both the title and the PDF filename. Create a clean, printable PDF titled "<insert topic>", combining my translated article, vocabulary list, and reading quiz. Structure it with headings, format in Markdown or HTML, and export the content as "<insert topic>.pdf".
+    </textarea>
+    <button class="copy-button" onclick="copyText('prompt6')">Copy Prompt</button>
+    <a class="chatgpt-link" href="https://chatgpt.com" target="_blank" onclick="copyText('prompt6')">Open ChatGPT</a>
+  </div>
+
+  <script>
+    const languageSelect = document.getElementById('language');
+    const levelSelect    = document.getElementById('level');
+    const topicInput     = document.getElementById('topic');
+    const prompt2        = document.getElementById('prompt2');
+    const prompt3        = document.getElementById('prompt3');
+    const prompt4        = document.getElementById('prompt4');
+    const prompt5        = document.getElementById('prompt5');
+    const prompt6        = document.getElementById('prompt6');
+
+    // Store the original templates for Step 5 and Step 6
+    const prompt5Template = prompt5.value.trim();
+    const prompt6Template = prompt6.value.trim();
+
+    function copyText(id) {
+      const textarea = document.getElementById(id);
+      const language = languageSelect.options[languageSelect.selectedIndex].text;
+      const level    = levelSelect.options[levelSelect.selectedIndex].text;
+      const topic    = topicInput?.value || "<insert topic>";
+
+      // Build the filled-in text
+      let filled = textarea.value
+        .replace(/<selected language>/gi, language)
+        .replace(/<selected level>/gi, level)
+        .replace(/<insert topic>/gi, topic);
+
+      // Save original, replace with filled
+      const original = textarea.value;
+      textarea.value = filled;
+
+      // Focus + select
+      textarea.focus();
+      textarea.setSelectionRange(0, filled.length);
+
+      // Copy (modern API first, fallback to execCommand)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(filled).catch(() => {
+          document.execCommand("copy");
+        });
+      } else {
+        document.execCommand("copy");
+      }
+
+      // Restore original
+      textarea.value = original;
+    }
+
+    function extractUrl(text) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const match = text.match(urlRegex);
+      return match ? match[0] : null;
+    }
+
+    function updatePrompt2() {
+      const level     = levelSelect.value;
+      const response1 = document.getElementById("response1").value;
+      let paragraphCount = "5 paragraphs";
+      if (["A0", "A1", "A2", "HSK1", "HSK2"].includes(level)) {
+        paragraphCount = "1 paragraph";
+      } else if (["B1", "B2", "HSK3", "HSK4"].includes(level)) {
+        paragraphCount = "3 paragraphs";
+      }
+      const articleSource = extractUrl(response1) || "<insert link or summary>";
+      prompt2.value = `Please summarize this article ${articleSource} using complete sentences. The summary should be approximately ${paragraphCount}, adjusted for a learner at proficiency level ${level}.\n\nFocus on the most important points, including any major breakthroughs, expert opinions, and key statistics. Use clear, concise language appropriate for the selected level.`;
+    }
+
+    function updatePrompt4() {
+      const level     = levelSelect.value;
+      const response3 = document.getElementById("response3").value.trim();
+      if (!response3) {
+        prompt4.value = `From the translated summary, select 10 important vocabulary words appropriate for the selected language and proficiency level.`;
+        return;
+      }
+      prompt4.value = `The following is a translated summary of an article for a learner at proficiency level ${level}:\n\n${response3}\n\nFrom the translated summary above:
+1. Select 10 important vocabulary words appropriate for this level.
+2. For each selected word, provide the word in the target language, including its definite article if it is a noun (e.g., le, la, el, la, der, die, das, etc.). For the English translation, if the word is a verb, give the English translation in infinitive form (e.g., to eat, to think).
+3. Also export the vocabulary list in CSV format with the following columns:
+   Front,Back,Learned
+   Set the "Learned" column to "false" for all new words.`;
+    }
+
+    function updatePrompt5And6() {
+      const language = languageSelect.options[languageSelect.selectedIndex].text;
+      const level    = levelSelect.options[levelSelect.selectedIndex].text;
+
+      // Rebuild from original templates
+      prompt5.value = prompt5Template
+        .replace(/<selected language>/gi, language)
+        .replace(/<selected level>/gi, level);
+
+      prompt6.value = prompt6Template
+        .replace(/<selected language>/gi, language)
+        .replace(/<selected level>/gi, level);
+    }
+
+    function generateCsvFromVocab(text) {
+      const lines = text.split('\n');
+      const vocabPairs = [];
+      const isCsv = lines[0].toLowerCase().startsWith("front,back,learned");
+      if (isCsv) {
+        for (let i = 1; i < lines.length; i++) {
+          const parts = lines[i].split(',');
+          if (parts.length === 3) vocabPairs.push(parts.map(p => p.trim()));
+        }
+      } else {
+        for (let line of lines) {
+          const match = line.match(/^\d+\.\s*(.+?)\s*[-–—]\s*(.+)$/);
+          if (match) vocabPairs.push([match[1].trim(), match[2].trim(), 'false']);
+        }
+      }
+      if (vocabPairs.length === 0) {
+        alert("No valid vocabulary pairs found in Step 4 response.");
+        return;
+      }
+      let csvContent = "data:text/csv;charset=utf-8,Front,Back,Learned\n";
+      vocabPairs.forEach(pair => {
+        csvContent += `${pair.join(',')}\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const downloadLink = document.createElement("a");
+      downloadLink.setAttribute("href", encodedUri);
+      downloadLink.setAttribute("download", "vocabulary_flashcards.csv");
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+
+    function downloadVocabCsv() {
+      const response4 = document.getElementById("response4").value.trim();
+      if (response4 === "") {
+        alert("Please paste your vocabulary list into Step 4 first.");
+        return;
+      }
+      generateCsvFromVocab(response4);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      levelSelect.addEventListener("change", () => {
+        updatePrompt2();
+        updatePrompt4();
+        updatePrompt5And6();
+      });
+      languageSelect.addEventListener("change", updatePrompt5And6);
+      topicInput.addEventListener("input", () => {});
+      document.getElementById("response1").addEventListener("input", updatePrompt2);
+      document.getElementById("response3").addEventListener("input", updatePrompt4);
+      document.getElementById("response4").addEventListener("blur", function () {
+        if (this.value.trim() !== "") {
+          generateCsvFromVocab(this.value);
+        }
+      });
+      updatePrompt2();
+      updatePrompt4();
+      updatePrompt5And6();
+    });
+  </script>
+</body>
+</html>
