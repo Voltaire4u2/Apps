@@ -1,14 +1,14 @@
-// script.js (Updated for Airtable - Read Only)
+// script.js (Updated with new PAT)
 document.addEventListener('DOMContentLoaded', () => {
     const buttonsContainer = document.getElementById('buttons-container');
-    const messageDiv = document.createElement('div'); // For displaying messages
+    const messageDiv = document.createElement('div');
     messageDiv.id = 'statusMessage';
-    buttonsContainer.parentNode.insertBefore(messageDiv, buttonsContainer.nextSibling); // Insert after buttons
+    buttonsContainer.parentNode.insertBefore(messageDiv, buttonsContainer.nextSibling);
 
     // --- Airtable API Configuration ---
-    const AIRTABLE_PAT = 'paty946Z2KgywTYGy.96f6400cfb54b1cc84e0dfed3238e1e9ec7b8b1d76cc3ae11ebeeb93b5bc1fa9'; // Replace with your token
-    const AIRTABLE_BASE_ID = 'appYY4nSEJouUfKL6';           // Replace with your Base ID
-    const AIRTABLE_TABLE_NAME = 'Links';                       // Replace with your table name if different
+    const AIRTABLE_PAT = 'paty946Z2KgywTYGy.96f6400cfb54b1cc84e0dfed3238e1e9ec7b8b1d76cc3ae11ebeeb93b5bc1fa9'; // <-- UPDATED THIS LINE
+    const AIRTABLE_BASE_ID = 'appYY4nSEJouUfKL6';
+    const AIRTABLE_TABLE_NAME = 'Links'; // Make sure this matches your table name exactly, case-sensitive!
 
     const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`;
 
@@ -17,22 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to display messages
     function showMessage(msg, type = 'info') {
         messageDiv.textContent = msg;
-        messageDiv.className = `message ${type}`; // Add classes for styling
+        messageDiv.className = `message ${type}`;
         messageDiv.style.display = 'block';
         setTimeout(() => {
             messageDiv.style.display = 'none';
-        }, 3000); // Hide after 3 seconds
+        }, 3000);
     }
 
     // Function to render buttons
     function renderButtons() {
         buttonsContainer.innerHTML = '';
         links.forEach(link => {
-            // Airtable field names are case-sensitive. Adjust if yours are different.
             const hyperlink = link.fields.Hyperlink;
             const buttonText = link.fields['Button Text'];
 
-            if (hyperlink && buttonText) { // Only render if both exist
+            if (hyperlink && buttonText) {
                 const button = document.createElement('a');
                 button.classList.add('link-button');
                 button.href = hyperlink;
@@ -57,17 +56,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(`Airtable API error: ${response.status} - ${errorData.error.message || 'Unknown error'}`);
+                // Check for specific error messages from Airtable
+                let errorMessage = errorData.error?.message || 'Unknown error';
+                if (response.status === 401 || response.status === 403) {
+                    errorMessage = `Authorization Error: Check your PAT's validity and permissions. Airtable says: ${errorMessage}`;
+                } else if (response.status === 404) {
+                    errorMessage = `Resource Not Found: Check your Base ID or Table Name. Airtable says: ${errorMessage}`;
+                }
+                throw new Error(`Airtable API error: ${response.status} - ${errorMessage}`);
             }
 
             const data = await response.json();
-            links = data.records; // Airtable returns data in a 'records' array
+            links = data.records;
             renderButtons();
             showMessage('Links loaded successfully!', 'success');
         } catch (error) {
             console.error("Could not load links from Airtable:", error);
             showMessage(`Error loading links: ${error.message}`, 'error');
-            buttonsContainer.innerHTML = '<p>Error loading links. Please check your Airtable setup or API key.</p>';
+            buttonsContainer.innerHTML = '<p>Error loading links. Please check your Airtable setup, PAT, or browser console for details.</p>';
         }
     }
 
