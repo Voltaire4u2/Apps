@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buttonsContainer.parentNode.insertBefore(messageDiv, buttonsContainer.nextSibling); // Insert after buttons
 
     // --- Airtable API Configuration ---
-    const AIRTABLE_PAT = 'patA1s3X8k9R8v71F.5574c831770e17622d645e99216d5573752e379b19e13467439c36825c0e0b3c'; // Replace with your token
+    const AIRTABLE_PAT = 'paty946Z2KgywTYGy.96f6400cfb54b1cc84e0dfed3238e1e9ec7b8b1d76cc3ae11ebeeb93b5bc1fa9'; // Replace with your token
     const AIRTABLE_BASE_ID = 'appYY4nSEJouUfKL6';           // Replace with your Base ID
     const AIRTABLE_TABLE_NAME = 'Links';                       // Replace with your table name if different
 
