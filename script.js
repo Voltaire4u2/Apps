@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Airtable API Configuration ---
     const AIRTABLE_PAT = 'paty946Z2KgywTYGy.96f6400cfb54b1cc84e0dfed3238e1e9ec7b8b1d76cc3ae11ebeeb93b5bc1fa9'; // <-- UPDATED THIS LINE
     const AIRTABLE_BASE_ID = 'appYY4nSEJouUfKL6';
-    const AIRTABLE_TABLE_NAME = 'Hyperlinks'; // Make sure this matches your table name exactly, case-sensitive!
+    const AIRTABLE_TABLE_NAME = 'Hyperlink Manager'; // Make sure this matches your table name exactly, case-sensitive!
 
     const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`;
 
