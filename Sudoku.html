@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sudoku</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    #controls {
+      margin: 10px 0;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(9, 40px);
+      grid-template-rows: repeat(9, 40px);
+      gap: 0;
+      border: 3px solid #333;
+    }
+    .cell {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.2em;
+      border: 1px solid #999;
+      box-sizing: border-box;
+    }
+/* Thicker borders around each 3×3 box */
+/* Vertical lines */
+.cell:nth-child(9n+1)  { border-left:  3px solid #333; }  /* left edge of col-1,4,7 */
+.cell:nth-child(9n+4)  { border-left:  3px solid #333; }
+.cell:nth-child(9n+7)  { border-left:  3px solid #333; }
+.cell:nth-child(3n)    { border-right: 3px solid #333; }  /* right edge of col-3,6,9 */
+
+/* Horizontal lines */
+/* top edge of row-1,4,7 */
+.cell:nth-child(-n+9)             { border-top:    3px solid #333; }
+.cell:nth-child(n+28):nth-child(-n+36) { border-top:    3px solid #333; }
+.cell:nth-child(n+55):nth-child(-n+63) { border-top:    3px solid #333; }
+/* bottom edge of row-3,6,9 */
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54),
+.cell:nth-child(n+73):nth-child(-n+81) { border-bottom: 3px solid #333; }
+    .cell input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      text-align: center;
+      font-size: 1.2em;
+      outline: none;
+    }
+    .cell input:focus {
+      background: #eef;
+    }
+    .cell.prefilled input {
+      font-weight: bold;
+      background: #ddd;
+    }
+    .cell.wrong input {
+      background: #fdd;
+    }
+    #message {
+      margin-top: 10px;
+      font-size: 1.1em;
+      height: 1.2em;
+    }
+    button {
+      padding: 6px 12px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    select {
+      font-size: 1em;
+      padding: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Sudoku</h1>
+
+  <div id="controls">
+    <label>
+      Difficulty
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="moderate">Moderate</option>
+        <option value="difficult">Difficult</option>
+      </select>
+    </label>
+    <button id="new-game">New Game</button>
+    <button id="check-solution">Check Solution</button>
+    <button id="reset">Reset</button>
+  </div>
+
+  <div id="grid"></div>
+  <div id="message"></div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const gridEl = document.getElementById('grid');
+    const messageEl = document.getElementById('message');
+    const diffSelect = document.getElementById('difficulty');
+    const newBtn = document.getElementById('new-game');
+    const checkBtn = document.getElementById('check-solution');
+    const resetBtn = document.getElementById('reset');
+
+    let solution = [];
+    let puzzle = [];
+    let original = [];
+
+    function makeEmptyBoard() {
+      return Array.from({length:9}, () => Array(9).fill(0));
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function canPlace(board, row, col, val) {
+      for (let i = 0; i < 9; i++) {
+        if (board[row][i] === val || board[i][col] === val) return false;
+      }
+      const br = Math.floor(row/3)*3, bc = Math.floor(col/3)*3;
+      for (let r = 0; r < 3; r++)
+        for (let c = 0; c < 3; c++)
+          if (board[br+r][bc+c] === val) return false;
+      return true;
+    }
+
+    function solve(board) {
+      for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+          if (board[r][c] === 0) {
+            for (let num of shuffle([1,2,3,4,5,6,7,8,9])) {
+              if (canPlace(board, r, c, num)) {
+                board[r][c] = num;
+                if (solve(board)) return true;
+                board[r][c] = 0;
+              }
+            }
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    function generateSolution() {
+      let b = makeEmptyBoard();
+      solve(b);
+      return b;
+    }
+
+    function makePuzzle(sol, level) {
+      const b = sol.map(row => row.slice());
+      let hints;
+      if (level === 'easy') hints = randInt(40, 45);
+      if (level === 'moderate') hints = randInt(30, 35);
+      if (level === 'difficult') hints = randInt(20, 25);
+
+      let removals = 81 - hints;
+      while (removals > 0) {
+        const r = Math.floor(Math.random()*9);
+        const c = Math.floor(Math.random()*9);
+        if (b[r][c] !== 0) {
+          b[r][c] = 0;
+          removals--;
+        }
+      }
+      return b;
+    }
+
+    function randInt(min, max) {
+      return Math.floor(Math.random()*(max-min+1)) + min;
+    }
+
+    function render() {
+      gridEl.innerHTML = '';
+      for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.maxLength = 1;
+          input.dataset.row = r;
+          input.dataset.col = c;
+          const val = puzzle[r][c];
+          if (val !== 0) {
+            input.value = val;
+            input.disabled = true;
+            cell.classList.add('prefilled');
+          }
+          input.addEventListener('keydown', restrictInput);
+          input.addEventListener('input', onInput);
+          cell.appendChild(input);
+          gridEl.appendChild(cell);
+        }
+      }
+    }
+
+    function restrictInput(e) {
+      if (!/[1-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && !e.ctrlKey) {
+        e.preventDefault();
+      }
+    }
+
+    function onInput(e) {
+      const r = +e.target.dataset.row;
+      const c = +e.target.dataset.col;
+      const v = parseInt(e.target.value) || 0;
+      puzzle[r][c] = v;
+      clearHighlights();
+      messageEl.textContent = '';
+      if (isComplete()) checkSolution();
+    }
+
+    function isComplete() {
+      return puzzle.every(row => row.every(val => val !== 0));
+    }
+
+    function clearHighlights() {
+      document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('wrong'));
+    }
+
+    function checkSolution() {
+      clearHighlights();
+      let wrong = false;
+      puzzle.forEach((row, r) => {
+        row.forEach((val, c) => {
+          if (val !== solution[r][c]) {
+            wrong = true;
+            // highlight
+            const idx = r*9 + c;
+            gridEl.children[idx].classList.add('wrong');
+          }
+        });
+      });
+      if (wrong) {
+        messageEl.textContent = 'Go back and fix something.';
+      } else {
+        messageEl.textContent = 'Congratulations!';
+      }
+    }
+
+    function resetPuzzle() {
+      puzzle = original.map(row => row.slice());
+      render();
+      messageEl.textContent = '';
+    }
+
+    function newGame() {
+      messageEl.textContent = '';
+      solution = generateSolution();
+      original = makePuzzle(solution, diffSelect.value);
+      puzzle = original.map(row => row.slice());
+      render();
+    }
+
+    newBtn.addEventListener('click', newGame);
+    checkBtn.addEventListener('click', checkSolution);
+    resetBtn.addEventListener('click', resetPuzzle);
+
+    // start first game
+    newGame();
+  });
+  </script>
+
+</body>
+</html>
