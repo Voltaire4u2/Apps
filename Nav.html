@@ -1,304 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airtable Links</title>
-    <!-- Tailwind CSS CDN for quick styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
         body {
-            font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a202c, #2d3748, #1a202c); /* Dark modern gradient */
-            color: #e2e8f0;
-            overflow: hidden; /* Prevent scrollbars due to animations */
-        }
-
-        .container {
-            width: 100%;
-            max-width: 960px;
-            padding: 2rem;
+            background: linear-gradient(135deg, #434343 0%, #000000 100%);
+            font-family: 'Arial', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            padding: 2rem;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 2rem;
-            color: #a0aec0; /* Lighter grey for heading */
-            text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .button-grid {
+        .button-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
-            width: 100%;
             max-width: 800px;
-            justify-content: center;
+            width: 100%;
         }
 
-        .animated-button {
-            background: linear-gradient(45deg, #4299e1, #63b3ed); /* Blue gradient */
-            color: white;
-            padding: 1rem 1.5rem;
+        .data-button {
+            padding: 1.2rem 2rem;
             border: none;
-            border-radius: 0.75rem; /* Rounded corners */
-            font-size: 1.125rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease-in-out;
-            text-decoration: none; /* Remove underline for links */
-            display: flex; /* Make it a flex container to center text */
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden; /* For ripple effect */
-        }
-
-        .animated-button:hover {
-            transform: translateY(-5px) scale(1.02); /* Lift and slightly scale */
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 20px #63b3ed; /* Stronger shadow and glow */
-            background: linear-gradient(45deg, #63b3ed, #4299e1); /* Subtle gradient shift */
-        }
-
-        .animated-button:active {
-            transform: translateY(0) scale(0.98); /* Press down effect */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
-        }
-
-        /* Ripple effect for click */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.7);
-            animation: ripple-animation 0.6s linear forwards;
-            pointer-events: none; /* Allows clicks to pass through */
-            transform: scale(0); /* Start small */
-            opacity: 1;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4); /* Expand */
-                opacity: 0; /* Fade out */
-            }
-        }
-
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-top: 2rem;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Basic message box styling for error/info messages */
-        .message-box {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #333;
-            color: white;
-            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            z-index: 1000;
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            text-align: center;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff9065 100%);
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.25);
         }
 
-        .message-box button {
-            background-color: #4299e1;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
+        .data-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            background: linear-gradient(135deg, #ff9065 0%, #ff6b35 100%);
+        }
+
+        .data-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .data-button::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            top: 0;
+            left: -100%;
+            transition: left 0.4s ease;
+        }
+
+        .data-button:hover::after {
+            left: 100%;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>All My Links</h1>
-        <div id="loading" class="loading-spinner"></div>
-        <div id="buttonContainer" class="button-grid">
-            <!-- Buttons will be dynamically loaded here -->
-        </div>
-    </div>
-
-    <!-- Message Box HTML -->
-    <div id="messageBox" class="message-box">
-        <p id="messageText"></p>
-        <button id="closeMessageBox">OK</button>
-    </div>
+    <div class="button-container" id="buttonContainer"></div>
 
     <script>
-        // Function to display a message in the custom message box
-        function showMessage(text) {
-            const messageBox = document.getElementById('messageBox');
-            const messageText = document.getElementById('messageText');
-            messageText.textContent = text;
-            messageBox.style.display = 'flex';
-        }
+        const AIRTABLE_ENDPOINT = 'https://api.airtable.com/v0/appzkENai2GZVOKx8/MyLinks';
+        const PAT = 'patewVnYLgaZkUID0.0d516abab3fd393773bae61ce119fb0804c2ec813b28ac3d8825a47825a33947';
 
-        // Event listener for closing the message box
-        document.getElementById('closeMessageBox').addEventListener('click', () => {
-            document.getElementById('messageBox').style.display = 'none';
-        });
-
-        // --- Configuration ---
-        // !!! IMPORTANT !!!
-        // Replace with your actual Airtable Base ID, Table Name, and Personal Access Token
-        // You can get your Personal Access Token from your Airtable account settings:
-        // https://airtable.com/create/tokens
-        const AIRTABLE_PAT = 'patewVnYLgaZkUID0.0d516abab3fd393773bae61ce119fb0804c2ec813b28ac3d8825a47825a33947'; // e.g., 'patABC123DEF456...'
-        const AIRTABLE_BASE_ID = 'appzkENai2GZVOKx8';           // e.g., 'appXYZ789UVW012...'
-        const AIRTABLE_TABLE_NAME = 'MyLinks';     // e.g., 'Links Table' or 'My Data'
-        // CATEGORY_FILTER is no longer used for fetching all records.
-        // const CATEGORY_FILTER = 'Links';
-
-        const buttonContainer = document.getElementById('buttonContainer');
-        const loadingSpinner = document.getElementById('loading');
-
-        // Function to create a ripple effect on button click
-        function createRipple(event) {
-            const button = event.currentTarget;
-            const circle = document.createElement('span');
-            const diameter = Math.max(button.offsetWidth, button.offsetHeight);
-            const radius = diameter / 2;
-
-            circle.style.width = circle.style.height = `${diameter}px`;
-            circle.style.left = `${event.clientX - (button.getBoundingClientRect().left + radius)}px`;
-            circle.style.top = `${event.clientY - (button.getBoundingClientRect().top + radius)}px`;
-            circle.classList.add('ripple');
-
-            const ripple = button.getElementsByClassName('ripple')[0];
-
-            if (ripple) {
-                ripple.remove();
-            }
-
-            button.appendChild(circle);
-
-            // Navigate after animation
-            setTimeout(() => {
-                window.open(button.href, '_blank');
-            }, 600); // Matches the animation duration
-        }
-
-        // Function to fetch data from Airtable
-        async function fetchAirtableData() {
-            loadingSpinner.style.display = 'block'; // Show loading spinner
-
-            if (!AIRTABLE_PAT || !AIRTABLE_BASE_ID || !AIRTABLE_TABLE_NAME || AIRTABLE_PAT === 'YOUR_AIRTABLE_PERSONAL_ACCESS_TOKEN') {
-                showMessage("Please update the AIRTABLE_PAT, AIRTABLE_BASE_ID, and AIRTABLE_TABLE_NAME in the script with your actual Airtable credentials.");
-                loadingSpinner.style.display = 'none';
-                return;
-            }
-
+        async function fetchData() {
             try {
-                // Removed filterByFormula to fetch all records
-                const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`;
-
-                const response = await fetch(url, {
+                const response = await fetch(AIRTABLE_ENDPOINT, {
                     headers: {
-                        'Authorization': `Bearer ${AIRTABLE_PAT}`
+                        'Authorization': `Bearer ${PAT}`
                     }
                 });
-
-                if (!response.ok) {
-                    // Check for specific error messages from Airtable API
-                    const errorData = await response.json();
-                    if (response.status === 401) {
-                         showMessage(`Error ${response.status}: Unauthorized. Check your Airtable Personal Access Token (PAT). Details: ${errorData.error.message}`);
-                    } else if (response.status === 404) {
-                         showMessage(`Error ${response.status}: Not Found. Check your Airtable Base ID and Table Name. Details: ${errorData.error.message}`);
-                    } else if (response.status === 403) {
-                         showMessage(`Error ${response.status}: Forbidden. Ensure your PAT has read permissions for the base/table. Details: ${errorData.error.message}`);
-                    } else {
-                        showMessage(`HTTP Error: ${response.status} - ${response.statusText}. Details: ${errorData.error.message || 'Unknown error'}`);
-                    }
-                    loadingSpinner.style.display = 'none';
-                    return;
-                }
-
+                
                 const data = await response.json();
-                displayButtons(data.records);
-
+                createButtons(data.records);
             } catch (error) {
-                console.error('Error fetching data from Airtable:', error);
-                showMessage('Failed to load links. Please check your internet connection and Airtable configuration.');
-            } finally {
-                loadingSpinner.style.display = 'none'; // Hide loading spinner
+                console.error('Error fetching data:', error);
             }
         }
 
-        // Function to display buttons
-        function displayButtons(records) {
-            buttonContainer.innerHTML = ''; // Clear previous buttons
-            if (records.length === 0) {
-                const noLinksMessage = document.createElement('p');
-                noLinksMessage.textContent = `No links found in your table.`;
-                noLinksMessage.className = "text-xl text-gray-400";
-                buttonContainer.appendChild(noLinksMessage);
-                return;
-            }
-
+        function createButtons(records) {
+            const container = document.getElementById('buttonContainer');
+            
             records.forEach(record => {
-                const name = record.fields.Name;
-                const hyperlink = record.fields.Hyperlink;
+                const button = document.createElement('button');
+                button.className = 'data-button';
+                button.textContent = record.fields.Name;
+                
+                button.addEventListener('click', () => {
+                    button.classList.add('animate__animated', 'animate__bounce');
+                    setTimeout(() => {
+                        window.open(record.fields.Hyperlink, '_blank');
+                        button.classList.remove('animate__animated', 'animate__bounce');
+                    }, 1000);
+                });
 
-                // Only create a button if both Name and Hyperlink fields exist
-                if (name && hyperlink) {
-                    const button = document.createElement('a');
-                    button.href = hyperlink; // Set the hyperlink
-                    button.target = '_blank'; // Open in new tab
-                    button.rel = 'noopener noreferrer'; // Security best practice for target="_blank"
-                    button.textContent = name;
-                    button.classList.add('animated-button');
-
-                    // Add click event for ripple effect
-                    button.addEventListener('click', function(event) {
-                        event.preventDefault(); // Prevent default link behavior immediately
-                        createRipple(event);
-                    });
-
-                    buttonContainer.appendChild(button);
-                }
+                container.appendChild(button);
             });
         }
 
-        // Fetch data when the page loads
-        document.addEventListener('DOMContentLoaded', fetchAirtableData);
+        fetchData();
     </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </body>
 </html>
