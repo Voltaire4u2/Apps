@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Media Links</title>
+  <style>
+    /* Dark modern gradient background */
+    body {
+      margin: 0;
+      height: 100vh;
+      padding-top: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #20002c, #400054, #600080);
+      font-family: Arial, sans-serif;
+      transition: opacity 0.5s ease;
+      position: relative;
+    }
+
+    body.fade-out {
+      opacity: 0;
+    }
+
+    header {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      padding: 1rem 0;
+      color: #ffffff;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    #buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 800px;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .link-button {
+      background: #1f2a36;
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .link-button:hover {
+      background: #2e3a4a;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .link-button:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    #statusMessage {
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 1rem;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <header>Don't Get Too Distracted</header>
+  <div id="buttons-container">
+    <div id="statusMessage">Loading links...</div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('buttons-container');
+      const status = document.getElementById('statusMessage');
+
+      // TODO: Replace with your actual Google Sheet ID and gid if different
+      const SHEET_ID = '1UwnfVMqsmO0zdZCGFKED9uSTznpUwFKibkXDhU8qB2o';
+      const GID = '1439554931';
+      const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
+
+      fetch(SHEET_URL)
+        .then(res => res.text())
+        .then(data => {
+          // Strip Google’s padding
+          const json = JSON.parse(data.substr(47).slice(0, -2));
+          const rows = json.table.rows;
+
+          // Remove status message
+          status.remove();
+
+          rows.forEach(row => {
+            const nameCell = row.c[0];   // Assume first column is Name
+            const linkCell = row.c[1];   // Assume second column is URL
+
+            if (nameCell && linkCell) {
+              const name = nameCell.v;
+              const url = linkCell.v;
+
+              const btn = document.createElement('button');
+              btn.className = 'link-button';
+              btn.textContent = name;
+              btn.onclick = e => {
+                e.preventDefault();
+                document.body.classList.add('fade-out');
+                setTimeout(() => window.open(url, '_blank'), 500);
+              };
+
+              container.appendChild(btn);
+            }
+          });
+        })
+        .catch(err => {
+          console.error('Error fetching sheet:', err);
+          status.textContent = 'Failed to load links.';
+        });
+    });
+  </script>
+</body>
+</html>
