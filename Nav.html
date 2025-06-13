@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get To Work Links</title>
+    <title>Airtable Links</title>
     <!-- Tailwind CSS CDN for quick styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -148,7 +148,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Essential Links</h1>
+        <h1>All My Links</h1>
         <div id="loading" class="loading-spinner"></div>
         <div id="buttonContainer" class="button-grid">
             <!-- Buttons will be dynamically loaded here -->
@@ -183,7 +183,8 @@
         const AIRTABLE_PAT = 'patewVnYLgaZkUID0'; // e.g., 'patABC123DEF456...'
         const AIRTABLE_BASE_ID = 'appzkENai2GZVOKx8';           // e.g., 'appXYZ789UVW012...'
         const AIRTABLE_TABLE_NAME = 'MyLinks';     // e.g., 'Links Table' or 'My Data'
-        const CATEGORY_FILTER = 'Links'; // The category value to filter by
+        // CATEGORY_FILTER is no longer used for fetching all records.
+        // const CATEGORY_FILTER = 'Links';
 
         const buttonContainer = document.getElementById('buttonContainer');
         const loadingSpinner = document.getElementById('loading');
@@ -225,9 +226,8 @@
             }
 
             try {
-                // Encode the filter formula to be URL-safe
-                const filterFormula = encodeURIComponent(`{Category}='${CATEGORY_FILTER}'`);
-                const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}?filterByFormula=${filterFormula}`;
+                // Removed filterByFormula to fetch all records
+                const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`;
 
                 const response = await fetch(url, {
                     headers: {
@@ -267,7 +267,7 @@
             buttonContainer.innerHTML = ''; // Clear previous buttons
             if (records.length === 0) {
                 const noLinksMessage = document.createElement('p');
-                noLinksMessage.textContent = `No links found with category "${CATEGORY_FILTER}".`;
+                noLinksMessage.textContent = `No links found in your table.`;
                 noLinksMessage.className = "text-xl text-gray-400";
                 buttonContainer.appendChild(noLinksMessage);
                 return;
@@ -277,6 +277,7 @@
                 const name = record.fields.Name;
                 const hyperlink = record.fields.Hyperlink;
 
+                // Only create a button if both Name and Hyperlink fields exist
                 if (name && hyperlink) {
                     const button = document.createElement('a');
                     button.href = hyperlink; // Set the hyperlink
