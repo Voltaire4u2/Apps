@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Airtable Link Launcher</title>
+  <style>
+    /* Dark, modern gradient background */
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #0f3460);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .btn-container {
+      margin: 20px 0;
+    }
+    .btn, .link-btn {
+      display: inline-block;
+      margin: 0.5em;
+      padding: 0.75em 1.5em;
+      border: none;
+      border-radius: 4px;
+      background: #16213e;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s ease;
+    }
+    .btn:hover, .link-btn:hover {
+      transform: translateY(-3px);
+    }
+    #links-container {
+      margin-top: 1em;
+      text-align: center;
+    }
+    .error {
+      color: #ff6b6b;
+      margin-top: 1em;
+    }
+    /* Animation CSS from CodePen can remain linked or inlined here */
+  </style>
+</head>
+<body>
+  <h1>Airtable Link Launcher</h1>
+  <div id="category-buttons" class="btn-container"></div>
+  <div id="links-container"></div>
+  <div id="error-message" class="error"></div>
+
+  <script>
+    // --- Airtable config ---
+    const AIRTABLE_BASE_ID = 'appzkENai2GZVOKx8';
+    const AIRTABLE_TABLE_NAME = 'MyLinks';
+    const AIRTABLE_API_KEY = 'paty946Z2KgywTYGy';
+    const categories = ['Study', 'Games', 'News', 'Social Media'];
+
+    async function fetchLinks() {
+      const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}?pageSize=100`;
+      try {
+        const resp = await fetch(url, {
+          headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` }
+        });
+        const data = await resp.json();
+        if (!resp.ok) {
+          throw new Error(data.error && data.error.message ? data.error.message : 'Unknown Airtable error');
+        }
+        return data.records.map(record => record.fields);
+      } catch (err) {
+        console.error('Error fetching Airtable:', err);
+        throw err;
+      }
+    }
+
+    function createButton(text, onClick, cls = 'btn') {
+      const btn = document.createElement('button');
+      btn.textContent = text;
+      btn.className = cls;
+      btn.addEventListener('click', onClick);
+      return btn;
+    }
+
+    function renderCategoryButtons() {
+      const container = document.getElementById('category-buttons');
+      categories.forEach(cat => {
+        const btn = createButton(cat, () => showLinks(cat));
+        container.appendChild(btn);
+      });
+    }
+
+    async function showLinks(category) {
+      const linksContainer = document.getElementById('links-container');
+      const errorDiv = document.getElementById('error-message');
+      linksContainer.innerHTML = '';
+      errorDiv.textContent = '';
+
+      try {
+        const allLinks = await fetchLinks();
+        const filtered = allLinks.filter(item => item.Category === category);
+
+        if (!filtered.length) {
+          linksContainer.textContent = 'No links found for this category.';
+          return;
+        }
+
+        filtered.forEach(item => {
+          const url = item.Hyperlink || item.URL || item.Link;
+          const name = item.Name || item.Title || 'Untitled';
+          if (!url) {
+            console.warn('Missing URL for item:', item);
+            return;
+          }
+          const linkBtn = createButton(name, () => window.open(url, '_blank'), 'link-btn');
+          linksContainer.appendChild(linkBtn);
+        });
+
+        // TODO: initialize or trigger your CodePen animation here
+      } catch (err) {
+        errorDiv.textContent = 'Failed to load links: ' + err.message;
+      }
+    }
+
+    // Initialize UI on DOM ready
+    document.addEventListener('DOMContentLoaded', renderCategoryButtons);
+  </script>
+</body>
+</html>
