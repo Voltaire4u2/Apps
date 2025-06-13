@@ -46,6 +46,8 @@
     }
     /* Animation CSS from CodePen can remain linked or inlined here */
   </style>
+  <!-- Airtable.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/airtable@0.11.4/browser/airtable.browser.js"></script>
 </head>
 <body>
   <h1>Airtable Link Launcher</h1>
@@ -57,25 +59,12 @@
     // --- Airtable config ---
     const AIRTABLE_BASE_ID = 'appzkENai2GZVOKx8';
     const AIRTABLE_TABLE_NAME = 'MyLinks';
-    const AIRTABLE_API_KEY = 'paty946Z2KgywTYGy';
+    const AIRTABLE_PAT = 'paty946Z2KgywTYGy';  // Your Personal Access Token
     const categories = ['Study', 'Games', 'News', 'Social Media'];
 
-    async function fetchLinks() {
-      const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}?pageSize=100`;
-      try {
-        const resp = await fetch(url, {
-          headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` }
-        });
-        const data = await resp.json();
-        if (!resp.ok) {
-          throw new Error(data.error && data.error.message ? data.error.message : 'Unknown Airtable error');
-        }
-        return data.records.map(record => record.fields);
-      } catch (err) {
-        console.error('Error fetching Airtable:', err);
-        throw err;
-      }
-    }
+    // Initialize Airtable client (browser version handles CORS)
+    const AirtableClient = new Airtable({ apiKey: AIRTABLE_PAT });
+    const Table = AirtableClient.base(AIRTABLE_BASE_ID)(AIRTABLE_TABLE_NAME);
 
     function createButton(text, onClick, cls = 'btn') {
       const btn = document.createElement('button');
@@ -93,39 +82,38 @@
       });
     }
 
-    async function showLinks(category) {
+    function showLinks(category) {
       const linksContainer = document.getElementById('links-container');
       const errorDiv = document.getElementById('error-message');
       linksContainer.innerHTML = '';
       errorDiv.textContent = '';
 
-      try {
-        const allLinks = await fetchLinks();
-        const filtered = allLinks.filter(item => item.Category === category);
+      Table.select({ pageSize: 100 }).all()
+        .then(records => {
+          const fields = records.map(r => r.fields);
+          const filtered = fields.filter(item => item.Category === category);
 
-        if (!filtered.length) {
-          linksContainer.textContent = 'No links found for this category.';
-          return;
-        }
-
-        filtered.forEach(item => {
-          const url = item.Hyperlink || item.URL || item.Link;
-          const name = item.Name || item.Title || 'Untitled';
-          if (!url) {
-            console.warn('Missing URL for item:', item);
+          if (!filtered.length) {
+            linksContainer.textContent = 'No links found for this category.';
             return;
           }
-          const linkBtn = createButton(name, () => window.open(url, '_blank'), 'link-btn');
-          linksContainer.appendChild(linkBtn);
-        });
 
-        // TODO: initialize or trigger your CodePen animation here
-      } catch (err) {
-        errorDiv.textContent = 'Failed to load links: ' + err.message;
-      }
+          filtered.forEach(item => {
+            const url = item.Hyperlink || item.URL || item.Link;
+            const name = item.Name || item.Title || 'Untitled';
+            if (!url) return;
+            const linkBtn = createButton(name, () => window.open(url, '_blank'), 'link-btn');
+            linksContainer.appendChild(linkBtn);
+          });
+
+          // TODO: trigger CodePen animation here
+        })
+        .catch(err => {
+          console.error('Airtable fetch error:', err);
+          errorDiv.textContent = 'Failed to load links: ' + err.message;
+        });
     }
 
-    // Initialize UI on DOM ready
     document.addEventListener('DOMContentLoaded', renderCategoryButtons);
   </script>
 </body>
