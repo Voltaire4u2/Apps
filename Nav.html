@@ -9,11 +9,32 @@
     body {
       margin: 0;
       height: 100vh;
+      padding-top: 80px;
       display: flex;
       justify-content: center;
       align-items: center;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       font-family: Arial, sans-serif;
+      transition: opacity 0.5s ease;
+      position: relative;
+    }
+
+    body.fade-out {
+      opacity: 0;
+    }
+
+    header {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      padding: 1rem 0;
+      color: #ffffff;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(0, 0, 0, 0.3);
     }
 
     #buttons-container {
@@ -22,6 +43,7 @@
       gap: 1rem;
       max-width: 800px;
       justify-content: center;
+      z-index: 1;
     }
 
     .link-button {
@@ -52,10 +74,12 @@
       text-align: center;
       color: #fff;
       margin-bottom: 1rem;
+      z-index: 1;
     }
   </style>
 </head>
 <body>
+  <header>Get to work</header>
   <div id="buttons-container">
     <div id="statusMessage">Loading links...</div>
   </div>
@@ -91,7 +115,11 @@
               const btn = document.createElement('button');
               btn.className = 'link-button';
               btn.textContent = name;
-              btn.onclick = () => window.open(url, '_blank');
+              btn.onclick = e => {
+                e.preventDefault();
+                document.body.classList.add('fade-out');
+                setTimeout(() => window.open(url, '_blank'), 500);
+              };
 
               container.appendChild(btn);
             }
