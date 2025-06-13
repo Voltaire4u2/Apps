@@ -1,26 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Hyperlink Buttons from Google Sheets</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Button Links</title>
+  <style>
+    /* Dark modern gradient background */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: Arial, sans-serif;
+    }
+
+    #buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 800px;
+      justify-content: center;
+    }
+
+    .link-button {
+      background: #1f2a36;
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .link-button:hover {
+      background: #2e3a4a;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .link-button:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    #statusMessage {
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
-  <H1>This is version 2</H1>
-  <div id="buttons"></div>
+  <div id="buttons-container">
+    <div id="statusMessage">Loading links...</div>
+  </div>
+
   <script>
-    // Replace with your opensheet or SheetBest JSON URL
-    fetch('https://opensheet.elk.sh/1UwnfVMqsmO0zdZCGFKED9uSTznpUwFKibkXDhU8qB2o/Links')
-      .then(response => response.json())
-      .then(data => {
-        const container = document.getElementById('buttons');
-        data.forEach(row => {
-          if (row.Name && row.Link) {
-            const btn = document.createElement('button');
-            btn.textContent = row.Name;
-            btn.onclick = () => window.open(row.Link, '_blank');
-            container.appendChild(btn);
-          }
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('buttons-container');
+      const status = document.getElementById('statusMessage');
+
+      // TODO: Replace with your actual Google Sheet ID and gid if different
+      const SHEET_ID = '1UwnfVMqsmO0zdZCGFKED9uSTznpUwFKibkXDhU8qB2o';
+      const GID = '0';
+      const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&tqx=out:json`;
+
+      fetch(SHEET_URL)
+        .then(res => res.text())
+        .then(data => {
+          // Strip Google’s padding
+          const json = JSON.parse(data.substr(47).slice(0, -2));
+          const rows = json.table.rows;
+
+          // Remove status message
+          status.remove();
+
+          rows.forEach(row => {
+            const nameCell = row.c[0];   // Assume first column is Name
+            const linkCell = row.c[1];   // Assume second column is URL
+
+            if (nameCell && linkCell) {
+              const name = nameCell.v;
+              const url = linkCell.v;
+
+              const btn = document.createElement('button');
+              btn.className = 'link-button';
+              btn.textContent = name;
+              btn.onclick = () => window.open(url, '_blank');
+
+              container.appendChild(btn);
+            }
+          });
+        })
+        .catch(err => {
+          console.error('Error fetching sheet:', err);
+          status.textContent = 'Failed to load links.';
         });
-      });
+    });
   </script>
 </body>
 </html>
