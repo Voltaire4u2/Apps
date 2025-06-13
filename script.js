@@ -49,9 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage('Loading links...', 'info');
             const response = await fetch(AIRTABLE_API_URL, {
                 headers: {
-                    'Authorization': 'Bearer ${AIRTABLE_PAT}',
-                    'Content-Type': 'application/json'
-                }
+  "Authorization": "Bearer …",
+  "Content-Type": "application/json"
+}
+
             });
 
             if (!response.ok) {
