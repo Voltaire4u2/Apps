@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Search Puzzle</title>
+    <link rel="stylesheet" href="wsstyle.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Word Search Puzzle</h1>
+
+        <div class="input-section">
+            <label for="wordInput">Paste your words here (one per line):</label>
+            <textarea id="wordInput" rows="10" placeholder="e.g.,&#10;APPLE&#10;BANANA&#10;CHERRY&#10;DATE"></textarea>
+            <button id="generateBtn">Generate Search</button>
+        </div>
+
+        <div class="game-section">
+            <div id="wordSearchGrid" class="grid-container"></div>
+            <div class="word-list-container">
+                <h2>Words to Find:</h2>
+                <ul id="wordList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="wsscript.js"></script>
+</body>
+</html>
+
+
+
