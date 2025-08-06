@@ -31,35 +31,25 @@ document.addEventListener('DOMContentLoaded', () => {
         wordSearchGrid.innerHTML = '';
         wordListElement.innerHTML = '';
     }
-  copyPromptBtn.addEventListener('click', () => {
+ 
+
+// Update the prompt textarea dynamically
+function updatePromptText() {
   const count = parseInt(wordCountInput.value, 10);
   const topic = topicInput.value.trim();
 
-  if (isNaN(count) || count < 1) {
-    alert('Please enter a valid number of words.');
+  if (isNaN(count) || count < 1 || !topic) {
+    generatedPrompt.value = '';
     return;
   }
 
-  if (topic === '') {
-    alert('Please enter a topic.');
-    return;
-  }
+  generatedPrompt.value = `Generate a list of ${count} words on the topic of ${topic}. Use no punctuations. List one word per line`;
+}
 
-  const prompt = `Generate a list of ${count} words on the topic of ${topic}. Use no punctuations. List one word per line`;
+// Trigger prompt generation on input
+wordCountInput.addEventListener('input', updatePromptText);
+topicInput.addEventListener('input', updatePromptText);
 
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(prompt)
-      .then(() => alert('✅ Prompt copied to clipboard!'))
-      .catch(err => {
-        console.error('Clipboard error:', err);
-        alert('⚠️ Clipboard copy failed. Try manually copying from the console.');
-        console.log(prompt); // fallback
-      });
-  } else {
-    alert('❌ Clipboard API not supported in this browser. Here is your prompt:');
-    console.log(prompt);
-  }
-});
 
 
     generateBtn.addEventListener('click', () => {
