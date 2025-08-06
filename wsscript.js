@@ -32,26 +32,35 @@ document.addEventListener('DOMContentLoaded', () => {
         wordListElement.innerHTML = '';
     }
   copyPromptBtn.addEventListener('click', () => {
-    const count = parseInt(wordCountInput.value, 10);
-    const topic = topicInput.value.trim();
+  const count = parseInt(wordCountInput.value, 10);
+  const topic = topicInput.value.trim();
 
-    if (isNaN(count) || count < 1) {
-      alert('Please enter a valid number of words.');
-      return;
-    }
+  if (isNaN(count) || count < 1) {
+    alert('Please enter a valid number of words.');
+    return;
+  }
 
-    if (topic === '') {
-      alert('Please enter a topic.');
-      return;
-    }
+  if (topic === '') {
+    alert('Please enter a topic.');
+    return;
+  }
 
-    const prompt = `Generate a list of ${count} words on the topic of ${topic}. Use no punctuations. List one word per line`;
+  const prompt = `Generate a list of ${count} words on the topic of ${topic}. Use no punctuations. List one word per line`;
 
-    // Copy to clipboard
+  if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(prompt)
-      .then(() => alert('Prompt copied to clipboard!'))
-      .catch(err => alert('Failed to copy prompt.'));
-  });
+      .then(() => alert('✅ Prompt copied to clipboard!'))
+      .catch(err => {
+        console.error('Clipboard error:', err);
+        alert('⚠️ Clipboard copy failed. Try manually copying from the console.');
+        console.log(prompt); // fallback
+      });
+  } else {
+    alert('❌ Clipboard API not supported in this browser. Here is your prompt:');
+    console.log(prompt);
+  }
+});
+
 
     generateBtn.addEventListener('click', () => {
         initializeGame(); // Reset game state
