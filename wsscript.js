@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateBtn = document.getElementById('generateBtn');
     const wordSearchGrid = document.getElementById('wordSearchGrid');
     const wordListElement = document.getElementById('wordList');
+      const wordCountInput = document.getElementById('wordCount');
+  const topicInput = document.getElementById('topic');
+  const copyPromptBtn = document.getElementById('copyPromptBtn');
 
     let words = [];
     let gridSize = 0;
@@ -28,6 +31,27 @@ document.addEventListener('DOMContentLoaded', () => {
         wordSearchGrid.innerHTML = '';
         wordListElement.innerHTML = '';
     }
+  copyPromptBtn.addEventListener('click', () => {
+    const count = parseInt(wordCountInput.value, 10);
+    const topic = topicInput.value.trim();
+
+    if (isNaN(count) || count < 1) {
+      alert('Please enter a valid number of words.');
+      return;
+    }
+
+    if (topic === '') {
+      alert('Please enter a topic.');
+      return;
+    }
+
+    const prompt = `Generate a list of ${count} words on the topic of ${topic}. Use no punctuations. List one word per line`;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(prompt)
+      .then(() => alert('Prompt copied to clipboard!'))
+      .catch(err => alert('Failed to copy prompt.'));
+  });
 
     generateBtn.addEventListener('click', () => {
         initializeGame(); // Reset game state
