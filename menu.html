@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unicorniverse Bakery & Cafe Menu</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      margin: 0;
+      background: #f8f8ff;
+      padding: 20px;
+    }
+    .section {
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    /* Different backgrounds for each section */
+    .drinks     { background: #D2FADB; }
+    .toasts     { background: #FFE2F4; }
+    .sandwiches { background: #FDFDBD; }
+
+    .header {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 18px 28px;
+      font-size: 1.6em;
+      font-weight: 600;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .arrow {
+      transition: transform 0.3s ease;
+      margin-right: 18px;
+      font-size: 1.4em;
+    }
+    .content {
+      padding: 0 28px 20px 58px;
+      display: none;
+      animation: fadeIn 0.25s;
+    }
+    .expanded .content {
+      display: block;
+    }
+    .expanded .arrow {
+      transform: rotate(180deg);
+    }
+    /* Responsive */
+    @media (max-width:600px) {
+      .header { font-size: 1.25em; padding: 14px 14px; }
+      .content { padding-left: 34px; }
+    }
+    @keyframes fadeIn {
+      from { opacity:0; }
+      to   { opacity:1; }
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center; margin-bottom:28px;">Unicorniverse Bakery & Cafe Menu</h1>
+  <div id="menu">
+    <!-- Drinks -->
+    <div class="section drinks" id="section-drinks">
+      <div class="header" onclick="toggleSection('drinks')">
+        <span class="arrow" id="arrow-drinks">&#9660;</span> Drinks
+      </div>
+      <div class="content">
+        <ul>
+          <li>Latte – Sm $7 / Lg $8</li>
+          <li>Double Espresso – $3</li>
+          <li>Cortado – $4.5</li>
+          <li>Americano – Sm $4 / Lg $5</li>
+          <li>Cappuccino – $6.5</li>
+          <li>Matcha Latte – Sm $6.5 / Lg $7.5</li>
+          <li>Rose Matcha</li>
+          <li>Wildberry Butterfly Pea</li>
+          <li>Chai Latte – Spiced Black Tea Latte</li>
+          <li>London Fog – Earl Grey Tea Latte with hints of Lavender and Vanilla</li>
+        </ul>
+        <p>
+          <b>+Flavors:</b> Lavender, Pistachio, Caramel, Hazelnut, Toffee Nut, Wildberry, French Vanilla, Rose, Sugar Free Vanilla +$0.75<br>
+          <b>+Extra Espresso Shot</b> – $1.5<br>
+        </p>
+        <ul>
+          <li>Lemonades – Sm $5/Lg $6 (Sweetened with Agave)</li>
+        </ul>
+        <h3 style="margin:15px 0 5px;">Latte Specials (Sm $8.5 / Lg $9.5)</h3>
+        <ul>
+          <li>Enchanted Delight: Caramel and French Vanilla</li>
+          <li>Lavender Bliss: French Vanilla and Lavender</li>
+          <li>Unicorn Classic: Pistachio and Caramel</li>
+          <li>Whimsical Pistachio: Toffee Nut and Pistachio</li>
+          <li>Spring Bloom: Rose and Wildberry</li>
+          <li>Cocomel Charm: Coconut and Caramel</li>
+        </ul>
+        <h3 style="margin:15px 0 5px;">Seasonal Lattes (Sm $10 / Lg $12)</h3>
+        <ul>
+          <li>Pistachio Mocha: Pistachio Mocha topped with Whipped Cream, Chocolate, and Crushed Pistachios</li>
+          <li>Berries & Cream: Wildberry Latte Topped with Whipped Cream, Berry Dust, Glitter, and White Chocolate</li>
+        </ul>
+        <p><b>Milk Choices:</b> Oat Milk is Standard. Oat, Almond, Coconut</p>
+      </div>
+    </div>
+    <!-- Toasts & Omelettes -->
+    <div class="section toasts" id="section-toasts">
+      <div class="header" onclick="toggleSection('toasts')">
+        <span class="arrow" id="arrow-toasts">&#9660;</span> Toasts & Omelettes
+      </div>
+      <div class="content">
+        <ul>
+          <li><b>Lemon Pepper Tofu Toast</b> – $14<br>
+            Toasted Croissant, Garlic Hummus, Lemon Pepper Tofu, Mozzarella, Sautéed Onions, Spring Mix, Sprouts, and Lemon Aioli
+          </li>
+          <li><b>Avocado Croissant Toast</b> – $12<br>
+            Toasted Croissant, Avocado, Smoked Gouda, Sautéed Garlic, Everything Seasoning, Sprouts
+          </li>
+          <li><b>Sicilian Avocado Toast (Spicy)</b> – $13<br>
+            Focaccia, Avocado, Sautéed Garlic, Tomatoes, Spinach, Mozzarella
+          </li>
+          <li><b>Smokey Avocado Toast (Spicy)</b> – $14<br>
+            Blackened Tofu, Pepper Jack, Sprouts, Onions, and Garlic
+          </li>
+          <li><b>Pesto Fromages Omelette</b> – $13<br>
+            Mozzarella, Bleu Cheese, and Pesto
+          </li>
+          <li><b>Sicilian Vegetable Omelette (Spicy)</b> – $15<br>
+            Portabello Mushroom, Broccoli, Spinach, Mozzarella, and Cheddar
+          </li>
+          <li><b>Greek Omelette</b> – $15<br>
+            Tomatoes, Kalamata Olives, Onion, Spinach, Mozzarella, and Feta
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- Sandwiches & Salads -->
+    <div class="section sandwiches" id="section-sandwiches">
+      <div class="header" onclick="toggleSection('sandwiches')">
+        <span class="arrow" id="arrow-sandwiches">&#9660;</span> Sandwiches & Salads
+      </div>
+      <div class="content">
+        <ul>
+          <li><b>La Verte Sandwich</b> – $16<br>
+            Croissant, Pesto, Mixed Greens, Tomato, Avocado, Feta, Just Egg or Tofu
+          </li>
+          <li><b>Tuscan Panini Sandwich</b> – $16<br>
+            Focaccia Bread, Portabello Mushroom, Spinach, Mayo, Provolone, Sautéed Onions and Garlic
+          </li>
+          <li><b>Blackened Tofu Sandwich (Spicy)</b> – $16<br>
+            Baguette, Blackened Tofu, Spinach, Chipotle Mayo, Smoked Gouda, Pepper Jack, Garlic Hummus
+          </li>
+          <li><b>Italian Fromage Sandwich</b> – $16<br>
+            Croissant, Roasted Tomatoes, Spinach, Pesto, Mozzarella, Cheddar, and Provolone
+          </li>
+          <li><b>Mediterranean Salad</b> – Small $9 / Large $12<br>
+            Romaine, Kalamata Olives, Cucumbers, Feta, Tomatoes, Purple Onion, Hummus, and Tzatziki
+          </li>
+          <li><b>Crispy Chickpea Salad</b> – Small $9 / Large $12<br>
+            Mixed Greens, Toasted Chickpeas, Tomato, Cucumber, Celery, Bleu Cheese, Ranch Dressing
+          </li>
+          <li><b>Magic Quinoa Bowl</b> – Small $9 / Large $18<br>
+            Quinoa, Crispy Brussels Sprouts, Avocado, Sprouts, Crispy Chickpeas, Hummus, Sautéed Portabello Mushrooms, Broccoli, and Roasted Tomatoes
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script>
+    const sections = ['drinks', 'toasts', 'sandwiches'];
+    let openSection = null;
+
+    function toggleSection(section) {
+      sections.forEach(sec => {
+        const elem = document.getElementById('section-' + sec);
+        const arrow = document.getElementById('arrow-' + sec);
+        if (sec === section) {
+          if (elem.classList.contains('expanded')) {
+            elem.classList.remove('expanded');
+            openSection = null;
+          } else {
+            elem.classList.add('expanded');
+            arrow.innerHTML = '&#9650;'; // up arrow
+            openSection = section;
+          }
+        } else {
+          elem.classList.remove('expanded');
+          document.getElementById('arrow-' + sec).innerHTML = '&#9660;'; // down arrow
+        }
+      });
+      // Set the arrow for the clicked section
+      const arrow = document.getElementById('arrow-' + section);
+      if (openSection === section) arrow.innerHTML = '&#9650;';
+      else arrow.innerHTML = '&#9660;';
+    }
+  </script>
+</body>
+</html>
